@@ -4,13 +4,10 @@ import Table from "./components/Table"
 import { calculateInvestmentResults } from "./util/investment"
 
 
-
 function App() {
 
-  const [initialInvestment, setInitialInvestment] = useState(0);
-  const [annualInvestment, setAnnualInvestment] = useState(0);
-  const [expectedReturn, setExpectedReturn] = useState(0);
-  const [duration, setDuration] = useState(0);
+
+  const [investment, setInvestment] = useState({ initialInvestment: 0, annualInvestment: 0, expectedReturn: 0, duration: 0 });
 
   const [results, setResults] = useState({
     year: 0,
@@ -29,23 +26,43 @@ function App() {
     <>
       <header id="header">
         <img src="/cat-investor.png" alt="logo app" />
-        <h1>Little Warren Investor</h1>
-        <p>Do you wonder why this cat is richer as Warren Buffet?🤑</p>
+        <h1>Kitten Warren Investor</h1>
+        <p>Do you wonder why this cat is rolling on it?🤑</p>
         <p>(Hint: He uses this tool😉)</p>
       </header>
       <section className="form-container">
-        <Calculator text="Initial Investment" idInput="initial-investment" value={initialInvestment} onChange={(e) => {
-          setInitialInvestment(e.target.value);
+
+        <Calculator text="Initial Investment" idInput="initial-investment" value={investment.initialInvestment}
+          onChange={(e) => {
+            setInvestment(prevInvestment => ({
+              ...prevInvestment,
+              initialInvestment: e.target.value
+            }));
           }} />
-        <Calculator text="Annual Investment" idInput="annual-investment" value={annualInvestment} onChange={(e) => {
-          setAnnualInvestment(e.target.value);
-        }} />
-        <Calculator text="Expected Return" idInput="expected-return" value={expectedReturn} onChange={(e) => {
-          setExpectedReturn(e.target.value);
-        }} />
-        <Calculator text="Duration" idInput="duration" value={duration} onChange={(e) => {
-          setDuration(e.target.value);
-        }} />
+
+        <Calculator text="Annual Investment" idInput="annual-investment" value={investment.annualInvestment}
+          onChange={(e) => {
+            setInvestment(prevInvestment => ({
+              ...prevInvestment,
+              annualInvestment: e.target.value
+            }));
+          }} />
+
+        <Calculator text="Expected Return" idInput="expected-return" value={investment.expectedReturn}
+          onChange={(e) => {
+            setInvestment(prevInvestment => ({
+              ...prevInvestment,
+              expectedReturn: e.target.value
+            }));
+          }} />
+
+        <Calculator text="Duration" idInput="duration" value={investment.duration}
+          onChange={(e) => {
+            setInvestment(prevInvestment => ({
+              ...prevInvestment,
+              duration: e.target.value
+            }));
+          }} />
       </section>
       <main>
         <Table year={results.year} investmentValue={results.valueEndOfYear} interest={results.interest} investedCapital={results.annualInvestment} />
