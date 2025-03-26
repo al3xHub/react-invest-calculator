@@ -1,4 +1,10 @@
-export default function Table({year, investmentValue, interest, investedCapital}) {
+import { calculateInvestmentResults, formatter } from "../util/investment";
+
+export default function Table({ investment }) {
+
+    const resultData = calculateInvestmentResults(investment)
+    const initialInvestment = resultData[0].valueEndOfYear - resultData[0].interest - resultData[0].annualInvestment
+
     return (
         <table id="result">
             <thead>
@@ -11,12 +17,19 @@ export default function Table({year, investmentValue, interest, investedCapital}
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>{year}</td>
-                    <td>{investmentValue}</td>
-                    <td>{interest}</td>
-                    <td>{investedCapital}</td>   
-                </tr>
+                {resultData.map((yearData) => {
+
+                    const totalInteres = yearData.valueEndOfYear - yearData.annualInvestment * yearData.year - initialInvestment;
+                    const totalAmountInvested = yearData.valueEndOfYear - totalInteres;
+
+                    return <tr key={yearData.year}>
+                        <td>{yearData.year}</td>
+                        <td>{formatter.format(yearData.valueEndOfYear)}</td>
+                        <td>{formatter.format(yearData.interest)}</td>
+                        <td>{formatter.format(totalInteres)}</td>
+                        <td>{formatter.format(totalAmountInvested)}</td>
+                    </tr>
+                })}
             </tbody>
         </table>
     );

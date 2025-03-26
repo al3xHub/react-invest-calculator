@@ -1,26 +1,22 @@
 import { useState } from "react"
 import Calculator from "./components/Calculator"
 import Table from "./components/Table"
-import { calculateInvestmentResults } from "./util/investment"
 
 
 function App() {
 
+  const [investment, setInvestment] = useState({ initialInvestment: 100, annualInvestment: 1000, expectedReturn: 8, duration: 10 });
 
-  const [investment, setInvestment] = useState({ initialInvestment: 0, annualInvestment: 0, expectedReturn: 0, duration: 0 });
+  function handleInvestment(inputValue, newValue) {
 
-  const [results, setResults] = useState({
-    year: 0,
-    interest: 0,
-    valueEndOfYear: 0,
-    annualInvestment: 0
-  });
+    setInvestment(prevInvestment => {
+      return {
+        ...prevInvestment,
+        [inputValue]: +newValue
+      };
+    })}
 
-  function handleCalculateInvestment(initialInvestment, annualInvestment, expectedReturn, duration) {
-    let annualData = calculateInvestmentResults({ initialInvestment, annualInvestment, expectedReturn, duration });
-
-    setResults({ year: annualData[0].year, interest: annualData[0].interest, valueEndOfYear: annualData[0].valueEndOfYear, annualInvestment: annualData[0].annualInvestment })
-  }
+  let inputIsValid = investment.duration >= 1;
 
   return (
     <>
@@ -32,40 +28,20 @@ function App() {
       </header>
       <section className="form-container">
 
-        <Calculator text="Initial Investment" idInput="initial-investment" value={investment.initialInvestment}
-          onChange={(e) => {
-            setInvestment(prevInvestment => ({
-              ...prevInvestment,
-              initialInvestment: e.target.value
-            }));
-          }} />
+        <Calculator text="Initial Investment" idInput="initialInvestment" value={investment.initialInvestment}
+          onChange={(e) => handleInvestment('initialInvestment', e.target.value)} />
 
-        <Calculator text="Annual Investment" idInput="annual-investment" value={investment.annualInvestment}
-          onChange={(e) => {
-            setInvestment(prevInvestment => ({
-              ...prevInvestment,
-              annualInvestment: e.target.value
-            }));
-          }} />
+        <Calculator text="Annual Investment" idInput="annualInvestment" value={investment.annualInvestment}
+          onChange={(e) => handleInvestment('annualInvestment', e.target.value)} />
 
-        <Calculator text="Expected Return" idInput="expected-return" value={investment.expectedReturn}
-          onChange={(e) => {
-            setInvestment(prevInvestment => ({
-              ...prevInvestment,
-              expectedReturn: e.target.value
-            }));
-          }} />
+        <Calculator text="Expected Return" idInput="expectedReturn" value={investment.expectedReturn}
+          onChange={(e) => handleInvestment('expectedReturn', e.target.value)}/>
 
         <Calculator text="Duration" idInput="duration" value={investment.duration}
-          onChange={(e) => {
-            setInvestment(prevInvestment => ({
-              ...prevInvestment,
-              duration: e.target.value
-            }));
-          }} />
+          onChange={(e) => handleInvestment('duration', e.target.value)} />
       </section>
       <main>
-        <Table year={results.year} investmentValue={results.valueEndOfYear} interest={results.interest} investedCapital={results.annualInvestment} />
+        {inputIsValid ? <Table investment={investment}/> : <p className="center">Please enter a duration rater than zero</p>}
       </main>
     </>
   )
